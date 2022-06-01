@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: react-challenge
+spec:
+  selector:
+    app: react-challenge
+  type: LoadBalancer
+  ports:
+    - protocol: "TCP"
+      port: 3000
+      targetPort: 3000

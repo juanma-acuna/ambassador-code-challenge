@@ -1,0 +1,2379 @@
+{
+  "Consul": {},
+  "Deltas": [
+    {
+      "kind": "Host",
+      "metadata": {
+        "name": "pedantic-chatelet-7902.edgestack.me",
+        "namespace": "ambassador",
+        "creationTimestamp": "2021-02-01T19:40:58Z"
+      },
+      "deltaType": "update",
+      "apiVersion": "getambassador.io/v2"
+    }
+  ],
+  "Invalid": null,
+  "Kubernetes": {
+    "Host": [
+      {
+        "kind": "Host",
+        "spec": {
+          "hostname": "pedantic-chatelet-7902.edgestack.me",
+          "selector": {
+            "matchLabels": {
+              "hostname": "pedantic-chatelet-7902.edgestack.me"
+            }
+          },
+          "tlsSecret": {
+            "name": "pedantic-2dchatelet-2d7902.edgestack.me"
+          },
+          "previewUrl": {
+            "enabled": true
+          },
+          "acmeProvider": {
+            "email": "alex@datawire.io",
+            "authority": "https://acme-v02.api.letsencrypt.org/directory",
+            "registration": "{\"body\":{\"status\":\"valid\",\"contact\":[\"mailto:alex@datawire.io\"]},\"uri\":\"https://acme-v02.api.letsencrypt.org/acme/acct/111400904\"}",
+            "privateKeySecret": {
+              "name": "https-3a-2f-2facme-2dv02.api.letsencrypt.org-2fdirectory--alex-40datawire.io"
+            }
+          },
+          "ambassador_id": ["default"]
+        },
+        "status": {
+          "state": "Ready",
+          "tlsCertificateSource": "ACME"
+        },
+        "metadata": {
+          "uid": "820ff4ef-24f3-4960-8b3b-0bc3a2fdb902",
+          "name": "pedantic-chatelet-7902.edgestack.me",
+          "selfLink": "/apis/getambassador.io/v2/namespaces/ambassador/hosts/pedantic-chatelet-7902.edgestack.me",
+          "namespace": "ambassador",
+          "generation": 3,
+          "annotations": {
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"getambassador.io/v2\",\"kind\":\"Host\",\"metadata\":{\"annotations\":{},\"name\":\"pedantic-chatelet-7902.edgestack.me\",\"namespace\":\"ambassador\"},\"spec\":{\"acmeProvider\":{\"email\":\"alex@datawire.io\"},\"hostname\":\"pedantic-chatelet-7902.edgestack.me\",\"previewUrl\":{\"enabled\":true}}}\n"
+          },
+          "resourceVersion": "2801",
+          "creationTimestamp": "2021-02-01T19:40:58Z"
+        },
+        "apiVersion": "getambassador.io/v2"
+      }
+    ],
+    "Pods": [
+      {
+        "kind": "Pod",
+        "spec": {
+          "volumes": [
+            {
+              "name": "config-volume",
+              "configMap": {
+                "name": "coredns",
+                "items": [
+                  {
+                    "key": "Corefile",
+                    "path": "Corefile"
+                  },
+                  {
+                    "key": "NodeHosts",
+                    "path": "NodeHosts"
+                  }
+                ],
+                "defaultMode": 420
+              }
+            },
+            {
+              "name": "coredns-token-2hzdc",
+              "secret": {
+                "secretName": "coredns-token-2hzdc",
+                "defaultMode": 420
+              }
+            }
+          ],
+          "nodeName": "acook1613148520622892439",
+          "priority": 0,
+          "dnsPolicy": "Default",
+          "containers": [
+            {
+              "args": ["-conf", "/etc/coredns/Corefile"],
+              "name": "coredns",
+              "image": "rancher/coredns-coredns:1.6.9",
+              "ports": [
+                {
+                  "name": "dns",
+                  "protocol": "UDP",
+                  "containerPort": 53
+                },
+                {
+                  "name": "dns-tcp",
+                  "protocol": "TCP",
+                  "containerPort": 53
+                },
+                {
+                  "name": "metrics",
+                  "protocol": "TCP",
+                  "containerPort": 9153
+                }
+              ],
+              "resources": {
+                "limits": {
+                  "memory": "170Mi"
+                },
+                "requests": {
+                  "cpu": "100m",
+                  "memory": "70Mi"
+                }
+              },
+              "volumeMounts": [
+                {
+                  "name": "config-volume",
+                  "readOnly": true,
+                  "mountPath": "/etc/coredns"
+                },
+                {
+                  "name": "coredns-token-2hzdc",
+                  "readOnly": true,
+                  "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
+                }
+              ],
+              "livenessProbe": {
+                "httpGet": {
+                  "path": "/health",
+                  "port": 8080,
+                  "scheme": "HTTP"
+                },
+                "periodSeconds": 10,
+                "timeoutSeconds": 5,
+                "failureThreshold": 5,
+                "successThreshold": 1,
+                "initialDelaySeconds": 60
+              },
+              "readinessProbe": {
+                "httpGet": {
+                  "path": "/ready",
+                  "port": 8181,
+                  "scheme": "HTTP"
+                },
+                "periodSeconds": 10,
+                "timeoutSeconds": 5,
+                "failureThreshold": 5,
+                "successThreshold": 1,
+                "initialDelaySeconds": 10
+              },
+              "imagePullPolicy": "IfNotPresent",
+              "securityContext": {
+                "capabilities": {
+                  "add": ["NET_BIND_SERVICE"],
+                  "drop": ["all"]
+                },
+                "readOnlyRootFilesystem": true,
+                "allowPrivilegeEscalation": false
+              },
+              "terminationMessagePath": "/dev/termination-log",
+              "terminationMessagePolicy": "File"
+            }
+          ],
+          "tolerations": [
+            {
+              "key": "CriticalAddonsOnly",
+              "operator": "Exists"
+            },
+            {
+              "key": "node.kubernetes.io/not-ready",
+              "effect": "NoExecute",
+              "operator": "Exists",
+              "tolerationSeconds": 300
+            },
+            {
+              "key": "node.kubernetes.io/unreachable",
+              "effect": "NoExecute",
+              "operator": "Exists",
+              "tolerationSeconds": 300
+            }
+          ],
+          "nodeSelector": {
+            "beta.kubernetes.io/os": "linux"
+          },
+          "restartPolicy": "Always",
+          "schedulerName": "default-scheduler",
+          "serviceAccount": "coredns",
+          "securityContext": {},
+          "enableServiceLinks": true,
+          "serviceAccountName": "coredns",
+          "terminationGracePeriodSeconds": 30
+        },
+        "status": {
+          "phase": "Running",
+          "podIP": "10.42.0.4",
+          "hostIP": "10.88.16.6",
+          "podIPs": [
+            {
+              "ip": "10.42.0.4"
+            }
+          ],
+          "qosClass": "Burstable",
+          "startTime": "2021-02-12T16:49:28Z",
+          "conditions": [
+            {
+              "type": "Initialized",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2021-02-12T16:49:28Z"
+            },
+            {
+              "type": "Ready",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2021-02-12T16:49:52Z"
+            },
+            {
+              "type": "ContainersReady",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2021-02-12T16:49:52Z"
+            },
+            {
+              "type": "PodScheduled",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2021-02-12T16:49:28Z"
+            }
+          ],
+          "containerStatuses": [
+            {
+              "name": "coredns",
+              "image": "docker.io/rancher/coredns-coredns:1.6.9",
+              "ready": true,
+              "state": {
+                "running": {
+                  "startedAt": "2021-02-12T16:49:36Z"
+                }
+              },
+              "imageID": "docker.io/rancher/coredns-coredns@sha256:e70c936deab8efed89db66f04847fec137dbb81d5b456e8068b6e71cb770f6c0",
+              "started": true,
+              "lastState": {},
+              "containerID": "containerd://5ee6ba78c0facca4b45865348a3da4ce8fc393818dc1bbb1a4a740bde855b317",
+              "restartCount": 0
+            }
+          ]
+        },
+        "metadata": {
+          "uid": "cc3abcf9-e068-46c1-a12a-6b155516b58e",
+          "name": "coredns-5b66977746-jcrfx",
+          "labels": {
+            "k8s-app": "kube-dns",
+            "pod-template-hash": "5b66977746"
+          },
+          "selfLink": "/api/v1/namespaces/kube-system/pods/coredns-5b66977746-jcrfx",
+          "namespace": "kube-system",
+          "generateName": "coredns-5b66977746-",
+          "ownerReferences": [
+            {
+              "uid": "db947683-a394-43ef-8b7e-3abdf7c888bd",
+              "kind": "ReplicaSet",
+              "name": "coredns-5b66977746",
+              "apiVersion": "apps/v1",
+              "controller": true,
+              "blockOwnerDeletion": true
+            }
+          ],
+          "resourceVersion": "403",
+          "creationTimestamp": "2021-02-12T16:49:28Z"
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "kind": "Pod",
+        "spec": {
+          "volumes": [
+            {
+              "name": "tmp-dir",
+              "emptyDir": {}
+            },
+            {
+              "name": "metrics-server-token-l4qk9",
+              "secret": {
+                "secretName": "metrics-server-token-l4qk9",
+                "defaultMode": 420
+              }
+            }
+          ],
+          "nodeName": "acook1613148520622892439",
+          "priority": 0,
+          "dnsPolicy": "ClusterFirst",
+          "containers": [
+            {
+              "name": "metrics-server",
+              "image": "rancher/metrics-server:v0.3.6",
+              "resources": {},
+              "volumeMounts": [
+                {
+                  "name": "tmp-dir",
+                  "mountPath": "/tmp"
+                },
+                {
+                  "name": "metrics-server-token-l4qk9",
+                  "readOnly": true,
+                  "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
+                }
+              ],
+              "imagePullPolicy": "IfNotPresent",
+              "terminationMessagePath": "/dev/termination-log",
+              "terminationMessagePolicy": "File"
+            }
+          ],
+          "tolerations": [
+            {
+              "key": "node.kubernetes.io/not-ready",
+              "effect": "NoExecute",
+              "operator": "Exists",
+              "tolerationSeconds": 300
+            },
+            {
+              "key": "node.kubernetes.io/unreachable",
+              "effect": "NoExecute",
+              "operator": "Exists",
+              "tolerationSeconds": 300
+            }
+          ],
+          "restartPolicy": "Always",
+          "schedulerName": "default-scheduler",
+          "serviceAccount": "metrics-server",
+          "securityContext": {},
+          "enableServiceLinks": true,
+          "serviceAccountName": "metrics-server",
+          "terminationGracePeriodSeconds": 30
+        },
+        "status": {
+          "phase": "Running",
+          "podIP": "10.42.0.3",
+          "hostIP": "10.88.16.6",
+          "podIPs": [
+            {
+              "ip": "10.42.0.3"
+            }
+          ],
+          "qosClass": "BestEffort",
+          "startTime": "2021-02-12T16:49:28Z",
+          "conditions": [
+            {
+              "type": "Initialized",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2021-02-12T16:49:28Z"
+            },
+            {
+              "type": "Ready",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2021-02-12T16:49:36Z"
+            },
+            {
+              "type": "ContainersReady",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2021-02-12T16:49:36Z"
+            },
+            {
+              "type": "PodScheduled",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2021-02-12T16:49:28Z"
+            }
+          ],
+          "containerStatuses": [
+            {
+              "name": "metrics-server",
+              "image": "docker.io/rancher/metrics-server:v0.3.6",
+              "ready": true,
+              "state": {
+                "running": {
+                  "startedAt": "2021-02-12T16:49:36Z"
+                }
+              },
+              "imageID": "docker.io/rancher/metrics-server@sha256:b85628b103169d7db52a32a48b46d8942accb7bde3709c0a4888a23d035f9f1e",
+              "started": true,
+              "lastState": {},
+              "containerID": "containerd://8ffde146b0968f9159a4813c1071b8143d26e1cc2d873a434e72d1a323c5557e",
+              "restartCount": 0
+            }
+          ]
+        },
+        "metadata": {
+          "uid": "2b891f68-450b-4aca-b279-830fa8942e31",
+          "name": "metrics-server-6d684c7b5-ttj8b",
+          "labels": {
+            "k8s-app": "metrics-server",
+            "pod-template-hash": "6d684c7b5"
+          },
+          "selfLink": "/api/v1/namespaces/kube-system/pods/metrics-server-6d684c7b5-ttj8b",
+          "namespace": "kube-system",
+          "generateName": "metrics-server-6d684c7b5-",
+          "ownerReferences": [
+            {
+              "uid": "e88cccf4-4c12-4413-b132-a20252fd2f1c",
+              "kind": "ReplicaSet",
+              "name": "metrics-server-6d684c7b5",
+              "apiVersion": "apps/v1",
+              "controller": true,
+              "blockOwnerDeletion": true
+            }
+          ],
+          "resourceVersion": "387",
+          "creationTimestamp": "2021-02-12T16:49:28Z"
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "kind": "Pod",
+        "spec": {
+          "volumes": [
+            {
+              "name": "default-token-z27b4",
+              "secret": {
+                "secretName": "default-token-z27b4",
+                "defaultMode": 420
+              }
+            }
+          ],
+          "nodeName": "acook1613148520622892439",
+          "priority": 0,
+          "dnsPolicy": "ClusterFirst",
+          "containers": [
+            {
+              "name": "redis",
+              "image": "redis:5.0.1",
+              "resources": {},
+              "volumeMounts": [
+                {
+                  "name": "default-token-z27b4",
+                  "readOnly": true,
+                  "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
+                }
+              ],
+              "imagePullPolicy": "IfNotPresent",
+              "terminationMessagePath": "/dev/termination-log",
+              "terminationMessagePolicy": "File"
+            }
+          ],
+          "tolerations": [
+            {
+              "key": "node.kubernetes.io/not-ready",
+              "effect": "NoExecute",
+              "operator": "Exists",
+              "tolerationSeconds": 300
+            },
+            {
+              "key": "node.kubernetes.io/unreachable",
+              "effect": "NoExecute",
+              "operator": "Exists",
+              "tolerationSeconds": 300
+            }
+          ],
+          "restartPolicy": "Always",
+          "schedulerName": "default-scheduler",
+          "serviceAccount": "default",
+          "securityContext": {},
+          "enableServiceLinks": true,
+          "serviceAccountName": "default",
+          "terminationGracePeriodSeconds": 30
+        },
+        "status": {
+          "phase": "Running",
+          "podIP": "10.42.0.5",
+          "hostIP": "10.88.16.6",
+          "podIPs": [
+            {
+              "ip": "10.42.0.5"
+            }
+          ],
+          "qosClass": "BestEffort",
+          "startTime": "2021-02-12T16:54:01Z",
+          "conditions": [
+            {
+              "type": "Initialized",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2021-02-12T16:54:01Z"
+            },
+            {
+              "type": "Ready",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2021-02-12T16:54:07Z"
+            },
+            {
+              "type": "ContainersReady",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2021-02-12T16:54:07Z"
+            },
+            {
+              "type": "PodScheduled",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2021-02-12T16:54:01Z"
+            }
+          ],
+          "containerStatuses": [
+            {
+              "name": "redis",
+              "image": "docker.io/library/redis:5.0.1",
+              "ready": true,
+              "state": {
+                "running": {
+                  "startedAt": "2021-02-12T16:54:07Z"
+                }
+              },
+              "imageID": "docker.io/library/redis@sha256:19f4621c085cb7df955f30616e7bf573e508924cff515027c1dd041f152bb1b6",
+              "started": true,
+              "lastState": {},
+              "containerID": "containerd://a54031e4d10fcca12d8915e16249cacec114a2222e8859dee7f9464f9bc5fc2e",
+              "restartCount": 0
+            }
+          ]
+        },
+        "metadata": {
+          "uid": "386ed4d8-967c-41e7-ba2d-51d1c8635bef",
+          "name": "ambassador-redis-5fbd59f4fb-qnw4f",
+          "labels": {
+            "service": "ambassador-redis",
+            "pod-template-hash": "5fbd59f4fb"
+          },
+          "selfLink": "/api/v1/namespaces/ambassador/pods/ambassador-redis-5fbd59f4fb-qnw4f",
+          "namespace": "saas-dev",
+          "generateName": "ambassador-redis-5fbd59f4fb-",
+          "ownerReferences": [
+            {
+              "uid": "9d8c270d-8b6c-4a1f-9c5e-ae44645a70b1",
+              "kind": "ReplicaSet",
+              "name": "ambassador-redis-5fbd59f4fb",
+              "apiVersion": "apps/v1",
+              "controller": true,
+              "blockOwnerDeletion": true
+            }
+          ],
+          "resourceVersion": "721",
+          "creationTimestamp": "2021-02-12T16:54:01Z"
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "kind": "Pod",
+        "spec": {
+          "volumes": [
+            {
+              "name": "ambassador-pod-info",
+              "downwardAPI": {
+                "items": [
+                  {
+                    "path": "labels",
+                    "fieldRef": {
+                      "fieldPath": "metadata.labels",
+                      "apiVersion": "v1"
+                    }
+                  }
+                ],
+                "defaultMode": 420
+              }
+            },
+            {
+              "name": "ambassador-edge-stack-secrets",
+              "secret": {
+                "secretName": "ambassador-edge-stack",
+                "defaultMode": 420
+              }
+            },
+            {
+              "name": "ambassador-token-r898b",
+              "secret": {
+                "secretName": "ambassador-token-r898b",
+                "defaultMode": 420
+              }
+            }
+          ],
+          "affinity": {
+            "podAntiAffinity": {
+              "preferredDuringSchedulingIgnoredDuringExecution": [
+                {
+                  "weight": 100,
+                  "podAffinityTerm": {
+                    "topologyKey": "kubernetes.io/hostname",
+                    "labelSelector": {
+                      "matchLabels": {
+                        "service": "ambassador"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "nodeName": "acook1613148520622892439",
+          "priority": 0,
+          "dnsPolicy": "ClusterFirst",
+          "containers": [
+            {
+              "env": [
+                {
+                  "name": "AMBASSADOR_NAMESPACE",
+                  "valueFrom": {
+                    "fieldRef": {
+                      "fieldPath": "metadata.namespace",
+                      "apiVersion": "v1"
+                    }
+                  }
+                },
+                {
+                  "name": "HOST_IP",
+                  "valueFrom": {
+                    "fieldRef": {
+                      "fieldPath": "status.hostIP",
+                      "apiVersion": "v1"
+                    }
+                  }
+                },
+                {
+                  "name": "REDIS_URL",
+                  "value": "ambassador-redis:6379"
+                },
+                {
+                  "name": "AMBASSADOR_URL",
+                  "value": "https://ambassador.ambassador.svc.cluster.local"
+                },
+                {
+                  "name": "POLL_EVERY_SECS",
+                  "value": "60"
+                },
+                {
+                  "name": "AMBASSADOR_INTERNAL_URL",
+                  "value": "https://127.0.0.1:8443"
+                },
+                {
+                  "name": "AMBASSADOR_SINGLE_NAMESPACE"
+                },
+                {
+                  "name": "AMBASSADOR_DRAIN_TIME",
+                  "value": "600"
+                },
+                {
+                  "name": "SCOUT_DISABLE",
+                  "value": "1"
+                },
+                {
+                  "name": "AMBASSADOR_FAST_RECONFIGURE"
+                },
+                {
+                  "name": "AMBASSADOR_LEGACY_MODE"
+                }
+              ],
+              "name": "aes",
+              "image": "docker.io/alixcook11/aes:bd0341b6b419",
+              "ports": [
+                {
+                  "name": "http",
+                  "protocol": "TCP",
+                  "containerPort": 8080
+                },
+                {
+                  "name": "https",
+                  "protocol": "TCP",
+                  "containerPort": 8443
+                },
+                {
+                  "name": "admin",
+                  "protocol": "TCP",
+                  "containerPort": 8877
+                }
+              ],
+              "resources": {
+                "limits": {
+                  "cpu": "1",
+                  "memory": "600Mi"
+                },
+                "requests": {
+                  "cpu": "200m",
+                  "memory": "300Mi"
+                }
+              },
+              "volumeMounts": [
+                {
+                  "name": "ambassador-pod-info",
+                  "mountPath": "/tmp/ambassador-pod-info"
+                },
+                {
+                  "name": "ambassador-edge-stack-secrets",
+                  "readOnly": true,
+                  "mountPath": "/.config/ambassador"
+                },
+                {
+                  "name": "ambassador-token-r898b",
+                  "readOnly": true,
+                  "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
+                }
+              ],
+              "livenessProbe": {
+                "httpGet": {
+                  "path": "/ambassador/v0/check_alive",
+                  "port": 8877,
+                  "scheme": "HTTP"
+                },
+                "periodSeconds": 3,
+                "timeoutSeconds": 1,
+                "failureThreshold": 3,
+                "successThreshold": 1
+              },
+              "readinessProbe": {
+                "httpGet": {
+                  "path": "/ambassador/v0/check_ready",
+                  "port": 8877,
+                  "scheme": "HTTP"
+                },
+                "periodSeconds": 3,
+                "timeoutSeconds": 1,
+                "failureThreshold": 3,
+                "successThreshold": 1
+              },
+              "imagePullPolicy": "IfNotPresent",
+              "securityContext": {
+                "allowPrivilegeEscalation": false
+              },
+              "terminationMessagePath": "/dev/termination-log",
+              "terminationMessagePolicy": "File"
+            }
+          ],
+          "tolerations": [
+            {
+              "key": "node.kubernetes.io/not-ready",
+              "effect": "NoExecute",
+              "operator": "Exists",
+              "tolerationSeconds": 300
+            },
+            {
+              "key": "node.kubernetes.io/unreachable",
+              "effect": "NoExecute",
+              "operator": "Exists",
+              "tolerationSeconds": 300
+            }
+          ],
+          "restartPolicy": "Always",
+          "schedulerName": "default-scheduler",
+          "serviceAccount": "ambassador",
+          "securityContext": {
+            "runAsUser": 8888
+          },
+          "enableServiceLinks": true,
+          "serviceAccountName": "ambassador",
+          "terminationGracePeriodSeconds": 0
+        },
+        "status": {
+          "phase": "Running",
+          "podIP": "10.42.0.14",
+          "hostIP": "10.88.16.6",
+          "podIPs": [
+            {
+              "ip": "10.42.0.14"
+            }
+          ],
+          "qosClass": "Burstable",
+          "startTime": "2021-02-12T17:48:47Z",
+          "conditions": [
+            {
+              "type": "Initialized",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2021-02-12T17:48:47Z"
+            },
+            {
+              "type": "Ready",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2021-02-12T17:49:02Z"
+            },
+            {
+              "type": "ContainersReady",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2021-02-12T17:49:02Z"
+            },
+            {
+              "type": "PodScheduled",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2021-02-12T17:48:47Z"
+            }
+          ],
+          "containerStatuses": [
+            {
+              "name": "aes",
+              "image": "docker.io/alixcook11/aes:bd0341b6b419",
+              "ready": true,
+              "state": {
+                "running": {
+                  "startedAt": "2021-02-12T17:48:57Z"
+                }
+              },
+              "imageID": "docker.io/alixcook11/aes@sha256:b2bb554c5a47ecf087310117d810cc22a50767cb65af2d6df75185391c4dd115",
+              "started": true,
+              "lastState": {},
+              "containerID": "containerd://a66f8240cf437859602afa93cc7f17568a80f6647f33f8ed3d2886c6d1fc3fec",
+              "restartCount": 0
+            }
+          ]
+        },
+        "metadata": {
+          "uid": "50ba1ad1-d981-494b-be1d-20d628ebd48c",
+          "name": "ambassador-7b6bdf6b8c-qv95l",
+          "labels": {
+            "service": "ambassador",
+            "pod-template-hash": "7b6bdf6b8c"
+          },
+          "selfLink": "/api/v1/namespaces/ambassador/pods/ambassador-7b6bdf6b8c-qv95l",
+          "namespace": "ambassador",
+          "annotations": {
+            "sidecar.istio.io/inject": "false",
+            "consul.hashicorp.com/connect-inject": "false"
+          },
+          "generateName": "ambassador-7b6bdf6b8c-",
+          "ownerReferences": [
+            {
+              "uid": "799964fd-d31a-4243-a96b-e4a922588083",
+              "kind": "ReplicaSet",
+              "name": "ambassador-7b6bdf6b8c",
+              "apiVersion": "apps/v1",
+              "controller": true,
+              "blockOwnerDeletion": true
+            }
+          ],
+          "resourceVersion": "5363",
+          "creationTimestamp": "2021-02-12T17:48:47Z"
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "kind": "Pod",
+        "spec": {
+          "nodeName": "acook1613148520622892439",
+          "priority": 0,
+          "dnsPolicy": "ClusterFirst",
+          "containers": [
+            {
+              "name": "aes",
+              "image": "docker.io/alixcook11/aes:bd0341b6b419",
+              "ports": [
+                {
+                  "name": "http",
+                  "protocol": "TCP",
+                  "containerPort": 8080
+                },
+                {
+                  "name": "https",
+                  "protocol": "TCP",
+                  "containerPort": 8443
+                },
+                {
+                  "name": "admin",
+                  "protocol": "TCP",
+                  "containerPort": 8877
+                }
+              ]
+            }
+          ],
+          "tolerations": [
+            {
+              "key": "node.kubernetes.io/not-ready",
+              "effect": "NoExecute",
+              "operator": "Exists",
+              "tolerationSeconds": 300
+            },
+            {
+              "key": "node.kubernetes.io/unreachable",
+              "effect": "NoExecute",
+              "operator": "Exists",
+              "tolerationSeconds": 300
+            }
+          ],
+          "restartPolicy": "Always",
+          "schedulerName": "default-scheduler",
+          "serviceAccount": "ambassador",
+          "securityContext": {
+            "runAsUser": 8888
+          },
+          "enableServiceLinks": true,
+          "serviceAccountName": "ambassador",
+          "terminationGracePeriodSeconds": 0
+        },
+        "status": {
+          "phase": "Running",
+          "podIP": "10.42.0.7",
+          "hostIP": "10.88.16.6",
+          "podIPs": [
+            {
+              "ip": "10.42.0.14"
+            }
+          ],
+          "qosClass": "Burstable",
+          "startTime": "2021-02-12T17:48:47Z",
+          "conditions": [
+            {
+              "type": "Initialized",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2021-02-12T17:48:47Z"
+            },
+            {
+              "type": "Ready",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2021-02-12T17:49:02Z"
+            },
+            {
+              "type": "ContainersReady",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2021-02-12T17:49:02Z"
+            },
+            {
+              "type": "PodScheduled",
+              "status": "True",
+              "lastProbeTime": null,
+              "lastTransitionTime": "2021-02-12T17:48:47Z"
+            }
+          ],
+          "containerStatuses": [
+            {
+              "name": "aes",
+              "image": "docker.io/alixcook11/aes:bd0341b6b419",
+              "ready": true,
+              "state": {
+                "running": {
+                  "startedAt": "2021-02-12T17:48:57Z"
+                }
+              },
+              "imageID": "docker.io/alixcook11/aes@sha256:b2bb554c5a47ecf087310117d810cc22a50767cb65af2d6df75185391c4dd115",
+              "started": true,
+              "lastState": {},
+              "containerID": "containerd://a66f8240cf437859602afa93cc7f17568a80f6647f33f8ed3d2886c6d1fc3fec",
+              "restartCount": 0
+            }
+          ]
+        },
+        "metadata": {
+          "uid": "99e7c74a-3140-4e19-aed9-994ac00b68bb",
+          "name": "telepresence-proxy-64cb65654c-82lrs",
+          "labels": {
+            "service": "ambassador",
+            "pod-template-hash": "7b6bdf6b8c"
+          },
+          "selfLink": "/api/v1/namespaces/ambassador/pods/telepresence-proxy-64cb65654c-82lrs",
+          "namespace": "ambassador",
+          "annotations": {
+            "sidecar.istio.io/inject": "false",
+            "consul.hashicorp.com/connect-inject": "false"
+          },
+          "generateName": "telepresence-proxy-64cb65654c-",
+          "ownerReferences": [
+            {
+              "uid": "799964fd-d31a-4243-a96b-e4a922588083",
+              "kind": "ReplicaSet",
+              "name": "telepresence-proxy-64cb65654c",
+              "apiVersion": "apps/v1",
+              "controller": true,
+              "blockOwnerDeletion": true
+            }
+          ],
+          "resourceVersion": "643",
+          "creationTimestamp": "2021-02-12T17:48:47Z"
+        },
+        "apiVersion": "v1"
+      }
+    ],
+    "Module": [
+      {
+        "kind": "Module",
+        "spec": {
+          "config": {
+            "cepc": {
+              "label": "This text should appear in the CEPC",
+              "address": "http://agentcom.saas-dev:8090/",
+              "enabled": true,
+              "account_id": "0ba34ef2-438a-4635-8f8b-86edec6aefdf"
+            }
+          }
+        },
+        "metadata": {
+          "uid": "0386ad62-0bc5-42d9-adc5-0bb54ee7de5e",
+          "name": "ambassador",
+          "selfLink": "/apis/getambassador.io/v2/namespaces/ambassador/modules/ambassador",
+          "namespace": "ambassador",
+          "generation": 1,
+          "annotations": {
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"getambassador.io/v2\",\"kind\":\"Module\",\"metadata\":{\"annotations\":{},\"name\":\"ambassador\",\"namespace\":\"ambassador\"},\"spec\":{\"config\":{\"cepc\":{\"account_id\":\"0ba34ef2-438a-4635-8f8b-86edec6aefdf\",\"address\":\"http://agentcom.saas-dev:8090/\",\"enabled\":true,\"label\":\"This text should appear in the CEPC\"}}}}\n"
+          },
+          "resourceVersion": "842",
+          "creationTimestamp": "2021-02-01T19:41:33Z"
+        },
+        "apiVersion": "getambassador.io/v2"
+      }
+    ],
+    "secret": [
+      {
+        "data": {
+          "tls.crt": "PFJFREFDVEVEPg==",
+          "tls.key": "PFJFREFDVEVEPg=="
+        },
+        "kind": "Secret",
+        "type": "kubernetes.io/tls",
+        "metadata": {
+          "name": "fallback-self-signed-cert",
+          "namespace": "ambassador",
+          "creationTimestamp": null
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "data": {
+          "license-key": "PFJFREFDVEVEPg=="
+        },
+        "kind": "Secret",
+        "type": "Opaque",
+        "metadata": {
+          "name": "ambassador-edge-stack",
+          "namespace": "ambassador",
+          "creationTimestamp": null
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "data": {
+          "user.key": "PFJFREFDVEVEPg=="
+        },
+        "kind": "Secret",
+        "type": "Opaque",
+        "metadata": {
+          "name": "https-3a-2f-2facme-2dv02.api.letsencrypt.org-2fdirectory--alex-40datawire.io",
+          "namespace": "ambassador",
+          "creationTimestamp": null
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "data": {
+          "tls.crt": "PFJFREFDVEVEPg==",
+          "tls.key": "PFJFREFDVEVEPg=="
+        },
+        "kind": "Secret",
+        "type": "kubernetes.io/tls",
+        "metadata": {
+          "name": "pedantic-2dchatelet-2d7902.edgestack.me",
+          "namespace": "ambassador",
+          "creationTimestamp": null
+        },
+        "apiVersion": "v1"
+      }
+    ],
+    "Mapping": [
+      {
+        "kind": "Mapping",
+        "spec": {
+          "prefix": "/documentation/",
+          "rewrite": "/docs/",
+          "service": "https://telepresence-proxy.ambassador:8081"
+        },
+        "metadata": {
+          "uid": "12aef9cd-3ff0-46da-9e46-45fcfa1cee97",
+          "name": "ambassador-devportal",
+          "labels": {
+            "product": "aes",
+            "helm.sh/chart": "ambassador-6.5.17",
+            "app.kubernetes.io/name": "ambassador",
+            "app.kubernetes.io/part-of": "ambassador",
+            "app.kubernetes.io/instance": "ambassador",
+            "app.kubernetes.io/component": "ambassador-devportal",
+            "app.kubernetes.io/managed-by": "Helm"
+          },
+          "selfLink": "/apis/getambassador.io/v2/namespaces/default/mappings/ambassador-devportal",
+          "namespace": "default",
+          "generation": 1,
+          "annotations": {
+            "meta.helm.sh/release-name": "ambassador",
+            "meta.helm.sh/release-namespace": "ambassador"
+          },
+          "resourceVersion": "574",
+          "creationTimestamp": "2021-02-01T19:39:33Z"
+        },
+        "apiVersion": "getambassador.io/v2"
+      },
+      {
+        "kind": "Mapping",
+        "spec": {
+          "prefix": "/documentation/",
+          "rewrite": "/docs/",
+          "service": "https://telepresence-proxy.ambassador:8081"
+        },
+        "metadata": {
+          "uid": "12aef9cd-3ff0-46da-9e46-45fcfa1cee97",
+          "name": "ambassador-devportal",
+          "labels": {
+            "product": "aes",
+            "helm.sh/chart": "ambassador-6.5.17",
+            "app.kubernetes.io/name": "ambassador",
+            "app.kubernetes.io/part-of": "ambassador",
+            "app.kubernetes.io/instance": "ambassador",
+            "app.kubernetes.io/component": "ambassador-devportal",
+            "app.kubernetes.io/managed-by": "Helm"
+          },
+          "selfLink": "/apis/getambassador.io/v2/namespaces/default/mappings/ambassador-devportal",
+          "namespace": "default",
+          "generation": 1,
+          "annotations": {
+            "meta.helm.sh/release-name": "ambassador",
+            "meta.helm.sh/release-namespace": "ambassador"
+          },
+          "resourceVersion": "574",
+          "creationTimestamp": "2021-02-01T19:39:33Z"
+        },
+        "apiVersion": "getambassador.io/v2"
+      },
+      {
+        "kind": "Mapping",
+        "spec": {
+          "prefix": "/docs/",
+          "rewrite": "/docs/",
+          "service": "tcp://telepresence-proxy"
+        },
+        "metadata": {
+          "uid": "9b02693d-f9a0-4f2b-a2fb-b884b0485bb3",
+          "name": "ambassador-devportal-demo",
+          "labels": {
+            "product": "aes",
+            "helm.sh/chart": "ambassador-6.5.17",
+            "app.kubernetes.io/name": "ambassador",
+            "app.kubernetes.io/part-of": "ambassador",
+            "app.kubernetes.io/instance": "ambassador",
+            "app.kubernetes.io/component": "ambassador-devportal-demo",
+            "app.kubernetes.io/managed-by": "Helm"
+          },
+          "selfLink": "/apis/getambassador.io/v2/namespaces/default/mappings/ambassador-devportal-demo",
+          "namespace": "ambassador",
+          "generation": 1,
+          "annotations": {
+            "meta.helm.sh/release-name": "ambassador",
+            "meta.helm.sh/release-namespace": "ambassador"
+          },
+          "resourceVersion": "575",
+          "creationTimestamp": "2021-02-01T19:39:33Z"
+        },
+        "apiVersion": "getambassador.io/v2"
+      },
+      {
+        "kind": "Mapping",
+        "spec": {
+          "prefix": "/documentation/(assets|styles)/(.*)(.css)",
+          "service": "127.0.0.1:8500",
+          "prefix_regex": true,
+          "regex_rewrite": {
+            "pattern": "/documentation/(.*)",
+            "substitution": "/docs/\\1"
+          },
+          "add_response_headers": {
+            "cache-control": {
+              "value": "public, max-age=3600, immutable",
+              "append": false
+            }
+          }
+        },
+        "metadata": {
+          "uid": "25eaac27-8def-4584-9cc6-7af240c29a95",
+          "name": "ambassador-devportal-assets",
+          "labels": {
+            "product": "aes",
+            "helm.sh/chart": "ambassador-6.5.17",
+            "app.kubernetes.io/name": "ambassador",
+            "app.kubernetes.io/part-of": "ambassador",
+            "app.kubernetes.io/instance": "ambassador",
+            "app.kubernetes.io/component": "ambassador-devportal-assets",
+            "app.kubernetes.io/managed-by": "Helm"
+          },
+          "selfLink": "/apis/getambassador.io/v2/namespaces/default/mappings/ambassador-devportal-assets",
+          "namespace": "default",
+          "generation": 1,
+          "annotations": {
+            "meta.helm.sh/release-name": "ambassador",
+            "meta.helm.sh/release-namespace": "ambassador"
+          },
+          "resourceVersion": "576",
+          "creationTimestamp": "2021-02-01T19:39:33Z"
+        },
+        "apiVersion": "getambassador.io/v2"
+      },
+      {
+        "kind": "Mapping",
+        "spec": {
+          "prefix": "/openapi/",
+          "rewrite": "",
+          "service": "telepresence-proxy"
+        },
+        "metadata": {
+          "uid": "4b439f58-cf31-4ed2-8e45-9b316c69e446",
+          "name": "ambassador-devportal-api",
+          "labels": {
+            "product": "aes",
+            "helm.sh/chart": "ambassador-6.5.17",
+            "app.kubernetes.io/name": "ambassador",
+            "app.kubernetes.io/part-of": "ambassador",
+            "app.kubernetes.io/instance": "ambassador",
+            "app.kubernetes.io/component": "ambassador-devportal-api",
+            "app.kubernetes.io/managed-by": "Helm"
+          },
+          "selfLink": "/apis/getambassador.io/v2/namespaces/default/mappings/ambassador-devportal-api",
+          "namespace": "default",
+          "generation": 1,
+          "annotations": {
+            "meta.helm.sh/release-name": "ambassador",
+            "meta.helm.sh/release-namespace": "ambassador"
+          },
+          "resourceVersion": "577",
+          "creationTimestamp": "2021-02-01T19:39:33Z"
+        },
+        "apiVersion": "getambassador.io/v2"
+      }
+    ],
+    "service": [
+      {
+        "kind": "Service",
+        "spec": {
+          "type": "ClusterIP",
+          "ports": [
+            {
+              "name": "ambassador-admin",
+              "port": 8877,
+              "protocol": "TCP",
+              "targetPort": "admin"
+            }
+          ],
+          "selector": {
+            "app.kubernetes.io/name": "ambassador",
+            "app.kubernetes.io/instance": "ambassador"
+          },
+          "clusterIP": "10.43.37.77",
+          "sessionAffinity": "None"
+        },
+        "status": {
+          "loadBalancer": {}
+        },
+        "metadata": {
+          "uid": "38cd6a7f-c3f0-4902-8cbb-b8fa628e44bd",
+          "name": "ambassador-admin",
+          "labels": {
+            "product": "aes",
+            "service": "ambassador-admin",
+            "helm.sh/chart": "ambassador-6.5.17",
+            "app.kubernetes.io/name": "ambassador",
+            "app.kubernetes.io/part-of": "ambassador",
+            "app.kubernetes.io/instance": "ambassador",
+            "app.kubernetes.io/managed-by": "Helm"
+          },
+          "selfLink": "/api/v1/namespaces/ambassador/services/ambassador-admin",
+          "namespace": "ambassador",
+          "annotations": {
+            "meta.helm.sh/release-name": "ambassador",
+            "meta.helm.sh/release-namespace": "ambassador",
+            "a8r.io/ignore": ""
+          },
+          "resourceVersion": "520",
+          "creationTimestamp": "2021-02-01T19:39:33Z"
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "kind": "Service",
+        "spec": {
+          "type": "ClusterIP",
+          "ports": [
+            {
+              "name": "https",
+              "port": 443,
+              "protocol": "TCP",
+              "targetPort": 6443
+            }
+          ],
+          "clusterIP": "10.43.0.1",
+          "sessionAffinity": "None"
+        },
+        "status": {
+          "loadBalancer": {}
+        },
+        "metadata": {
+          "uid": "e51dab73-52fd-40e1-94be-5a17b471034f",
+          "name": "kubernetes",
+          "labels": {
+            "provider": "kubernetes",
+            "component": "apiserver"
+          },
+          "selfLink": "/api/v1/namespaces/default/services/kubernetes",
+          "namespace": "default",
+          "resourceVersion": "146",
+          "creationTimestamp": "2021-02-01T19:38:48Z"
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "kind": "Service",
+        "spec": {
+          "type": "ClusterIP",
+          "ports": [
+            {
+              "port": 6379,
+              "protocol": "TCP",
+              "targetPort": 6379
+            }
+          ],
+          "selector": {
+            "service": "saas-redis"
+          },
+          "clusterIP": "10.43.240.188",
+          "sessionAffinity": "None"
+        },
+        "status": {
+          "loadBalancer": {}
+        },
+        "metadata": {
+          "uid": "64a34c44-0d0b-4d45-b8ef-64232aae4d17",
+          "name": "saas-redis",
+          "selfLink": "/api/v1/namespaces/saas-dev/services/saas-redis",
+          "namespace": "saas-dev",
+          "annotations": {
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"name\":\"saas-redis\",\"namespace\":\"saas-dev\"},\"spec\":{\"ports\":[{\"port\":6379,\"targetPort\":6379}],\"selector\":{\"service\":\"saas-redis\"},\"type\":\"ClusterIP\"}}\n",
+            "app.getambassador.io/description": "Just an example",
+            "app.getambassador.io/owner": "mock-email"
+          },
+          "resourceVersion": "802",
+          "creationTimestamp": "2021-02-01T19:41:32Z"
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "kind": "Service",
+        "spec": {
+          "type": "ClusterIP",
+          "ports": [
+            {
+              "port": 443,
+              "protocol": "TCP",
+              "targetPort": 443
+            }
+          ],
+          "selector": {
+            "k8s-app": "metrics-server"
+          },
+          "clusterIP": "10.43.145.123",
+          "sessionAffinity": "None"
+        },
+        "status": {
+          "loadBalancer": {}
+        },
+        "metadata": {
+          "uid": "3e4f73a2-8e48-4208-af89-509e8ed34516",
+          "name": "metrics-server",
+          "labels": {
+            "kubernetes.io/name": "Metrics-server",
+            "objectset.rio.cattle.io/hash": "a5d3bc601c871e123fa32b27f549b6ea770bcf4a",
+            "kubernetes.io/cluster-service": "true"
+          },
+          "selfLink": "/api/v1/namespaces/kube-system/services/metrics-server",
+          "namespace": "kube-system",
+          "annotations": {
+            "objectset.rio.cattle.io/id": "",
+            "objectset.rio.cattle.io/applied": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{\"objectset.rio.cattle.io/id\":\"\",\"objectset.rio.cattle.io/owner-gvk\":\"k3s.cattle.io/v1, Kind=Addon\",\"objectset.rio.cattle.io/owner-name\":\"metrics-server-service\",\"objectset.rio.cattle.io/owner-namespace\":\"kube-system\"},\"labels\":{\"kubernetes.io/cluster-service\":\"true\",\"kubernetes.io/name\":\"Metrics-server\",\"objectset.rio.cattle.io/hash\":\"a5d3bc601c871e123fa32b27f549b6ea770bcf4a\"},\"name\":\"metrics-server\",\"namespace\":\"kube-system\"},\"spec\":{\"ports\":[{\"port\":443,\"protocol\":\"TCP\",\"targetPort\":443}],\"selector\":{\"k8s-app\":\"metrics-server\"}}}",
+            "objectset.rio.cattle.io/owner-gvk": "k3s.cattle.io/v1, Kind=Addon",
+            "objectset.rio.cattle.io/owner-name": "metrics-server-service",
+            "objectset.rio.cattle.io/owner-namespace": "kube-system"
+          },
+          "resourceVersion": "234",
+          "creationTimestamp": "2021-02-01T19:38:51Z"
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "kind": "Service",
+        "spec": {
+          "type": "LoadBalancer",
+          "ports": [
+            {
+              "name": "http",
+              "port": 80,
+              "nodePort": 30333,
+              "protocol": "TCP",
+              "targetPort": 8080
+            },
+            {
+              "name": "https",
+              "port": 443,
+              "nodePort": 30950,
+              "protocol": "TCP",
+              "targetPort": 8443
+            }
+          ],
+          "selector": {
+            "app.kubernetes.io/name": "ambassador",
+            "app.kubernetes.io/instance": "ambassador"
+          },
+          "clusterIP": "10.43.62.173",
+          "sessionAffinity": "None",
+          "externalTrafficPolicy": "Cluster"
+        },
+        "status": {
+          "loadBalancer": {
+            "ingress": [
+              {
+                "ip": "34.121.91.176"
+              }
+            ]
+          }
+        },
+        "metadata": {
+          "uid": "42c3f32d-4edf-4029-8dd4-db5456b2664b",
+          "name": "ambassador",
+          "labels": {
+            "product": "aes",
+            "helm.sh/chart": "ambassador-6.5.17",
+            "app.kubernetes.io/name": "ambassador",
+            "app.kubernetes.io/part-of": "ambassador",
+            "app.kubernetes.io/instance": "ambassador",
+            "app.kubernetes.io/component": "ambassador-service",
+            "app.kubernetes.io/managed-by": "Helm"
+          },
+          "selfLink": "/api/v1/namespaces/ambassador/services/ambassador",
+          "namespace": "ambassador",
+          "annotations": {
+            "meta.helm.sh/release-name": "ambassador",
+            "meta.helm.sh/release-namespace": "ambassador"
+          },
+          "resourceVersion": "531",
+          "creationTimestamp": "2021-02-01T19:39:33Z"
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "kind": "Service",
+        "spec": {
+          "type": "ClusterIP",
+          "ports": [
+            {
+              "name": "http",
+              "port": 8090,
+              "protocol": "TCP",
+              "targetPort": "http"
+            }
+          ],
+          "selector": {
+            "service": "agentcom"
+          },
+          "clusterIP": "10.43.137.105",
+          "sessionAffinity": "None"
+        },
+        "status": {
+          "loadBalancer": {}
+        },
+        "metadata": {
+          "uid": "aecf671e-f3c2-4f3e-b919-c5c92d2c6847",
+          "name": "agentcom",
+          "selfLink": "/api/v1/namespaces/saas-dev/services/agentcom",
+          "namespace": "saas-dev",
+          "annotations": {
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"name\":\"agentcom\",\"namespace\":\"saas-dev\"},\"spec\":{\"ports\":[{\"name\":\"http\",\"port\":8090,\"targetPort\":\"http\"}],\"selector\":{\"service\":\"agentcom\"},\"type\":\"ClusterIP\"}}\n"
+          },
+          "resourceVersion": "826",
+          "creationTimestamp": "2021-02-01T19:41:32Z"
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "kind": "Service",
+        "spec": {
+          "type": "ClusterIP",
+          "ports": [
+            {
+              "name": "dns",
+              "port": 53,
+              "protocol": "UDP",
+              "targetPort": 53
+            },
+            {
+              "name": "dns-tcp",
+              "port": 53,
+              "protocol": "TCP",
+              "targetPort": 53
+            },
+            {
+              "name": "metrics",
+              "port": 9153,
+              "protocol": "TCP",
+              "targetPort": 9153
+            }
+          ],
+          "selector": {
+            "k8s-app": "kube-dns"
+          },
+          "clusterIP": "10.43.0.10",
+          "sessionAffinity": "None"
+        },
+        "status": {
+          "loadBalancer": {}
+        },
+        "metadata": {
+          "uid": "b02d6d48-15c0-4d20-8f10-313e5144fa56",
+          "name": "kube-dns",
+          "labels": {
+            "k8s-app": "kube-dns",
+            "kubernetes.io/name": "CoreDNS",
+            "objectset.rio.cattle.io/hash": "bce283298811743a0386ab510f2f67ef74240c57",
+            "kubernetes.io/cluster-service": "true"
+          },
+          "selfLink": "/api/v1/namespaces/kube-system/services/kube-dns",
+          "namespace": "kube-system",
+          "annotations": {
+            "prometheus.io/port": "9153",
+            "prometheus.io/scrape": "true",
+            "objectset.rio.cattle.io/id": "",
+            "objectset.rio.cattle.io/applied": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{\"objectset.rio.cattle.io/id\":\"\",\"objectset.rio.cattle.io/owner-gvk\":\"k3s.cattle.io/v1, Kind=Addon\",\"objectset.rio.cattle.io/owner-name\":\"coredns\",\"objectset.rio.cattle.io/owner-namespace\":\"kube-system\",\"prometheus.io/port\":\"9153\",\"prometheus.io/scrape\":\"true\"},\"labels\":{\"k8s-app\":\"kube-dns\",\"kubernetes.io/cluster-service\":\"true\",\"kubernetes.io/name\":\"CoreDNS\",\"objectset.rio.cattle.io/hash\":\"bce283298811743a0386ab510f2f67ef74240c57\"},\"name\":\"kube-dns\",\"namespace\":\"kube-system\"},\"spec\":{\"clusterIP\":\"10.43.0.10\",\"ports\":[{\"name\":\"dns\",\"port\":53,\"protocol\":\"UDP\"},{\"name\":\"dns-tcp\",\"port\":53,\"protocol\":\"TCP\"},{\"name\":\"metrics\",\"port\":9153,\"protocol\":\"TCP\"}],\"selector\":{\"k8s-app\":\"kube-dns\"}}}",
+            "objectset.rio.cattle.io/owner-gvk": "k3s.cattle.io/v1, Kind=Addon",
+            "objectset.rio.cattle.io/owner-name": "coredns",
+            "objectset.rio.cattle.io/owner-namespace": "kube-system"
+          },
+          "resourceVersion": "207",
+          "creationTimestamp": "2021-02-01T19:38:51Z"
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "kind": "Service",
+        "spec": {
+          "type": "ClusterIP",
+          "ports": [
+            {
+              "name": "sshd",
+              "port": 8022,
+              "protocol": "TCP",
+              "targetPort": 8022
+            },
+            {
+              "name": "api",
+              "port": 8081,
+              "protocol": "TCP",
+              "targetPort": 8081
+            }
+          ],
+          "selector": {
+            "app.kubernetes.io/name": "telepresence-proxy",
+            "app.kubernetes.io/instance": "ambassador"
+          },
+          "clusterIP": "None",
+          "sessionAffinity": "None"
+        },
+        "status": {
+          "loadBalancer": {}
+        },
+        "metadata": {
+          "uid": "c3f3655f-6b4d-404b-ac4a-9fbf7650750c",
+          "name": "telepresence-proxy",
+          "labels": {
+            "helm.sh/chart": "ambassador-6.5.17",
+            "app.kubernetes.io/name": "telepresence-proxy",
+            "app.kubernetes.io/part-of": "ambassador",
+            "app.kubernetes.io/instance": "ambassador",
+            "app.kubernetes.io/managed-by": "Helm",
+            "argocd.argoproj.io/instance": "myapplication"
+          },
+          "selfLink": "/api/v1/namespaces/ambassador/services/telepresence-proxy",
+          "namespace": "ambassador",
+          "annotations": {
+            "meta.helm.sh/release-name": "ambassador",
+            "meta.helm.sh/release-namespace": "ambassador",
+            "app.getambassador.io/owner": "mock-username",
+            "a8r.io/rollouts.scm.type": "myscmtype",
+            "a8r.io/rollouts.scm.url": "myscmurl",
+            "a8r.io/rollouts.scm.path": "myscmpath",
+            "a8r.io/rollouts.scm.branch": "myscmbranch",
+            "a8r.io/rollouts.image-repo.type": "myimagerepotype",
+            "a8r.io/rollouts.image-repo.name": "myimagereponame",
+            "a8r.io/rollouts.service": "myservice",
+            "a8r.io/rollouts.mappings": "mymappings1,mymappings2",
+            "a8r.io/rollouts.deployment": "mydeployment",
+            "app.getambassador.io/dependencies": "ambassador-admin.ambassador, ambassador-injector,saas-redis.saas-dev.svc.cluster.local, doesntexist.blah"
+          },
+          "resourceVersion": "511",
+          "creationTimestamp": "2021-02-01T19:39:33Z"
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "kind": "Service",
+        "spec": {
+          "type": "ClusterIP",
+          "ports": [
+            {
+              "name": "sshd",
+              "port": 8022,
+              "protocol": "TCP",
+              "targetPort": 8022
+            },
+            {
+              "name": "api",
+              "port": 8081,
+              "protocol": "TCP",
+              "targetPort": 8081
+            }
+          ],
+          "selector": {
+            "app.kubernetes.io/name": "telepresence-proxy",
+            "app.kubernetes.io/instance": "ambassador"
+          },
+          "clusterIP": "None",
+          "sessionAffinity": "None"
+        },
+        "status": {
+          "loadBalancer": {}
+        },
+        "metadata": {
+          "uid": "c3f3655f-6b4d-404b-ac4a-9fbf76507501",
+          "name": "telepresence-proxy",
+          "labels": {
+            "helm.sh/chart": "ambassador-6.5.17",
+            "app.kubernetes.io/name": "telepresence-proxy",
+            "app.kubernetes.io/part-of": "ambassador",
+            "app.kubernetes.io/instance": "ambassador",
+            "app.kubernetes.io/managed-by": "Helm"
+          },
+          "selfLink": "/api/v1/namespaces/ambassador/services/telepresence-proxy",
+          "namespace": "ambassador",
+          "annotations": {
+            "meta.helm.sh/release-name": "ambassador",
+            "meta.helm.sh/release-namespace": "ambassador",
+            "app.getambassador.io/owner": "mock-username",
+            "app.getambassador.io/dependencies": "ambassador-admin.ambassador, ambassador-injector,saas-redis.saas-dev.svc.cluster.local, doesntexist.blah"
+          },
+          "resourceVersion": "511",
+          "creationTimestamp": "2021-02-01T19:39:33Z"
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "kind": "Service",
+        "spec": {
+          "type": "ClusterIP",
+          "ports": [
+            {
+              "name": "sshd",
+              "port": 8022,
+              "protocol": "TCP",
+              "targetPort": 8022
+            },
+            {
+              "name": "api",
+              "port": 8081,
+              "protocol": "TCP",
+              "targetPort": 8081
+            }
+          ],
+          "selector": {
+            "app.kubernetes.io/name": "telepresence-proxy",
+            "app.kubernetes.io/instance": "ambassador"
+          },
+          "clusterIP": "None",
+          "sessionAffinity": "None"
+        },
+        "status": {
+          "loadBalancer": {}
+        },
+        "metadata": {
+          "uid": "c3f3655f-6b4d-404b-ac4a-9fbf76507502",
+          "name": "telepresence-proxy",
+          "labels": {
+            "helm.sh/chart": "ambassador-6.5.17",
+            "app.kubernetes.io/name": "telepresence-proxy",
+            "app.kubernetes.io/part-of": "ambassador",
+            "app.kubernetes.io/instance": "ambassador",
+            "app.kubernetes.io/managed-by": "Helm"
+          },
+          "selfLink": "/api/v1/namespaces/ambassador/services/telepresence-proxy",
+          "namespace": "ambassador",
+          "annotations": {
+            "meta.helm.sh/release-name": "ambassador",
+            "meta.helm.sh/release-namespace": "ambassador",
+            "app.getambassador.io/owner": "mock-username",
+            "a8r.io/rollouts.mappings": "mymappings1",
+            "app.getambassador.io/dependencies": "ambassador-admin.ambassador, ambassador-injector,saas-redis.saas-dev.svc.cluster.local, doesntexist.blah"
+          },
+          "resourceVersion": "511",
+          "creationTimestamp": "2021-02-01T19:39:33Z"
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "kind": "Service",
+        "spec": {
+          "type": "ClusterIP",
+          "ports": [
+            {
+              "name": "sshd",
+              "port": 8022,
+              "protocol": "TCP",
+              "targetPort": 8022
+            },
+            {
+              "name": "api",
+              "port": 8081,
+              "protocol": "TCP",
+              "targetPort": 8081
+            }
+          ],
+          "selector": {
+            "app.kubernetes.io/name": "telepresence-proxy",
+            "app.kubernetes.io/instance": "ambassador"
+          },
+          "clusterIP": "None",
+          "sessionAffinity": "None"
+        },
+        "status": {
+          "loadBalancer": {}
+        },
+        "metadata": {
+          "uid": "c3f3655f-6b4d-404b-ac4a-9fbf76507503",
+          "name": "telepresence-proxy",
+          "labels": {
+            "helm.sh/chart": "ambassador-6.5.17",
+            "app.kubernetes.io/name": "telepresence-proxy",
+            "app.kubernetes.io/part-of": "ambassador",
+            "app.kubernetes.io/instance": "ambassador",
+            "app.kubernetes.io/managed-by": "Helm"
+          },
+          "selfLink": "/api/v1/namespaces/ambassador/services/telepresence-proxy",
+          "namespace": "ambassador",
+          "annotations": {
+            "meta.helm.sh/release-name": "ambassador",
+            "meta.helm.sh/release-namespace": "ambassador",
+            "app.getambassador.io/owner": "mock-username",
+            "a8r.io/rollouts.mappings": "",
+            "app.getambassador.io/dependencies": "ambassador-admin.ambassador, ambassador-injector,saas-redis.saas-dev.svc.cluster.local, doesntexist.blah"
+          },
+          "resourceVersion": "511",
+          "creationTimestamp": "2021-02-01T19:39:33Z"
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "kind": "Service",
+        "spec": {
+          "type": "ClusterIP",
+          "ports": [
+            {
+              "name": "ambassador-injector",
+              "port": 443,
+              "protocol": "TCP",
+              "targetPort": "https"
+            }
+          ],
+          "selector": {
+            "app.kubernetes.io/name": "ambassador-injector",
+            "app.kubernetes.io/instance": "ambassador"
+          },
+          "clusterIP": "10.43.45.154",
+          "sessionAffinity": "None"
+        },
+        "status": {
+          "loadBalancer": {}
+        },
+        "metadata": {
+          "uid": "6ca78bba-4702-403c-a23a-88559e6090e2",
+          "name": "ambassador-injector",
+          "labels": {
+            "helm.sh/chart": "ambassador-6.5.17",
+            "app.kubernetes.io/name": "ambassador-injector",
+            "app.kubernetes.io/part-of": "ambassador",
+            "app.kubernetes.io/instance": "ambassador",
+            "app.kubernetes.io/managed-by": "Helm"
+          },
+          "selfLink": "/api/v1/namespaces/ambassador/services/ambassador-injector",
+          "namespace": "ambassador",
+          "annotations": {
+            "meta.helm.sh/release-name": "ambassador",
+            "meta.helm.sh/release-namespace": "ambassador"
+          },
+          "resourceVersion": "517",
+          "creationTimestamp": "2021-02-01T19:39:33Z"
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "kind": "Service",
+        "spec": {
+          "type": "ClusterIP",
+          "ports": [
+            {
+              "port": 6379,
+              "protocol": "TCP",
+              "targetPort": 6379
+            }
+          ],
+          "selector": {
+            "app.kubernetes.io/name": "ambassador-redis",
+            "app.kubernetes.io/instance": "ambassador"
+          },
+          "clusterIP": "10.43.22.196",
+          "sessionAffinity": "None"
+        },
+        "status": {
+          "loadBalancer": {}
+        },
+        "metadata": {
+          "uid": "09e279cf-fd06-42bb-bd79-3122dc9deba7",
+          "name": "ambassador-redis",
+          "labels": {
+            "helm.sh/chart": "ambassador-6.5.17",
+            "app.kubernetes.io/name": "ambassador-redis",
+            "app.kubernetes.io/part-of": "ambassador",
+            "app.kubernetes.io/instance": "ambassador",
+            "app.kubernetes.io/managed-by": "Helm"
+          },
+          "selfLink": "/api/v1/namespaces/ambassador/services/ambassador-redis",
+          "namespace": "ambassador",
+          "annotations": {
+            "meta.helm.sh/release-name": "ambassador",
+            "meta.helm.sh/release-namespace": "ambassador"
+          },
+          "resourceVersion": "513",
+          "creationTimestamp": "2021-02-01T19:39:33Z"
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "kind": "Service",
+        "spec": {
+          "type": "ClusterIP",
+          "ports": [
+            {
+              "name": "postgresql",
+              "port": 5432,
+              "protocol": "TCP",
+              "targetPort": "postgresql"
+            }
+          ],
+          "selector": {
+            "service": "saas-postgresql"
+          },
+          "clusterIP": "10.43.230.60",
+          "sessionAffinity": "None"
+        },
+        "status": {
+          "loadBalancer": {}
+        },
+        "metadata": {
+          "uid": "08085db7-4d32-44f2-bd46-cc76a18df8c8",
+          "name": "saas-postgresql",
+          "selfLink": "/api/v1/namespaces/saas-dev/services/saas-postgresql",
+          "namespace": "saas-dev",
+          "annotations": {
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"name\":\"saas-postgresql\",\"namespace\":\"saas-dev\"},\"spec\":{\"ports\":[{\"name\":\"postgresql\",\"port\":5432,\"targetPort\":\"postgresql\"}],\"selector\":{\"service\":\"saas-postgresql\"},\"type\":\"ClusterIP\"}}\n"
+          },
+          "resourceVersion": "784",
+          "creationTimestamp": "2021-02-01T19:41:31Z"
+        },
+        "apiVersion": "v1"
+      }
+    ],
+    "ConfigMaps": [
+      {
+        "apiVersion": "v1",
+        "data": {
+          "application.instanceLabelKey": "argocd.argoproj.io/instance",
+          "url": "https://argocd.example.com"
+        },
+        "kind": "ConfigMap",
+        "metadata": {
+          "annotations": {
+            "meta.helm.sh/release-name": "argocd",
+            "meta.helm.sh/release-namespace": "argocd"
+          },
+          "creationTimestamp": "2021-10-21T15:13:05Z",
+          "labels": {
+            "app.kubernetes.io/component": "server",
+            "app.kubernetes.io/instance": "argocd",
+            "app.kubernetes.io/managed-by": "Helm",
+            "app.kubernetes.io/name": "argocd-cm",
+            "app.kubernetes.io/part-of": "argocd",
+            "helm.sh/chart": "argo-cd-3.26.2"
+          },
+          "name": "argocd-cm",
+          "namespace": "argocd",
+          "resourceVersion": "720155",
+          "uid": "2bf1fa66-2a40-48cc-b4fe-c129cd13b2d4"
+        }
+      }
+    ],
+    "DevPortal": null,
+    "Endpoints": [
+      {
+        "kind": "Endpoints",
+        "subsets": [
+          {
+            "ports": [
+              {
+                "name": "http",
+                "port": 8090,
+                "protocol": "TCP"
+              }
+            ],
+            "addresses": [
+              {
+                "ip": "10.42.0.12",
+                "nodeName": "alex",
+                "targetRef": {
+                  "uid": "09e60667-c202-4dd7-94f1-282426ba654a",
+                  "kind": "Pod",
+                  "name": "agentcom-547795d494-9zwpp",
+                  "namespace": "saas-dev",
+                  "resourceVersion": "909"
+                }
+              }
+            ]
+          }
+        ],
+        "metadata": {
+          "uid": "883c3053-74c0-4029-b46f-d86cd1f3c0eb",
+          "name": "agentcom",
+          "selfLink": "/api/v1/namespaces/saas-dev/endpoints/agentcom",
+          "namespace": "saas-dev",
+          "annotations": {
+            "endpoints.kubernetes.io/last-change-trigger-time": "2021-02-01T19:42:03Z"
+          },
+          "resourceVersion": "911",
+          "creationTimestamp": "2021-02-01T19:41:32Z"
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "kind": "Endpoints",
+        "subsets": [
+          {
+            "ports": [
+              {
+                "name": "ambassador-admin",
+                "port": 8877,
+                "protocol": "TCP"
+              }
+            ],
+            "addresses": [
+              {
+                "ip": "10.42.0.13",
+                "nodeName": "alex",
+                "targetRef": {
+                  "uid": "c9aba4f0-3ed7-4be7-b9dc-6ffe10612299",
+                  "kind": "Pod",
+                  "name": "ambassador-78974f49b4-26hmb",
+                  "namespace": "ambassador",
+                  "resourceVersion": "1015"
+                }
+              }
+            ]
+          }
+        ],
+        "metadata": {
+          "uid": "ebf93110-e3d8-45ec-a004-ec3b510b4c29",
+          "name": "ambassador-admin",
+          "labels": {
+            "product": "aes",
+            "service": "ambassador-admin",
+            "helm.sh/chart": "ambassador-6.5.17",
+            "app.kubernetes.io/name": "ambassador",
+            "app.kubernetes.io/part-of": "ambassador",
+            "app.kubernetes.io/instance": "ambassador",
+            "app.kubernetes.io/managed-by": "Helm"
+          },
+          "selfLink": "/api/v1/namespaces/ambassador/endpoints/ambassador-admin",
+          "namespace": "ambassador",
+          "resourceVersion": "1025",
+          "creationTimestamp": "2021-02-01T19:39:33Z"
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "kind": "Endpoints",
+        "subsets": [
+          {
+            "ports": [
+              {
+                "name": "https",
+                "port": 6443,
+                "protocol": "TCP"
+              }
+            ],
+            "addresses": [
+              {
+                "ip": "10.88.19.2"
+              }
+            ]
+          }
+        ],
+        "metadata": {
+          "uid": "6d93c43d-b6fd-40ce-b608-ffa1f3a92ab3",
+          "name": "kubernetes",
+          "selfLink": "/api/v1/namespaces/default/endpoints/kubernetes",
+          "namespace": "default",
+          "resourceVersion": "148",
+          "creationTimestamp": "2021-02-01T19:38:48Z"
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "kind": "Endpoints",
+        "subsets": [
+          {
+            "ports": [
+              {
+                "name": "sshd",
+                "port": 8022,
+                "protocol": "TCP"
+              },
+              {
+                "name": "api",
+                "port": 8081,
+                "protocol": "TCP"
+              }
+            ],
+            "addresses": [
+              {
+                "ip": "10.42.0.7",
+                "nodeName": "alex",
+                "targetRef": {
+                  "uid": "99e7c74a-3140-4e19-aed9-994ac00b68bb",
+                  "kind": "Pod",
+                  "name": "telepresence-proxy-64cb65654c-82lrs",
+                  "namespace": "ambassador",
+                  "resourceVersion": "643"
+                }
+              }
+            ]
+          }
+        ],
+        "metadata": {
+          "uid": "5b0d5c83-d471-4b45-b15b-58db77e35e45",
+          "name": "telepresence-proxy",
+          "labels": {
+            "helm.sh/chart": "ambassador-6.5.17",
+            "app.kubernetes.io/name": "telepresence-proxy",
+            "app.kubernetes.io/part-of": "ambassador",
+            "app.kubernetes.io/instance": "ambassador",
+            "app.kubernetes.io/managed-by": "Helm",
+            "service.kubernetes.io/headless": ""
+          },
+          "selfLink": "/api/v1/namespaces/ambassador/endpoints/telepresence-proxy",
+          "namespace": "ambassador",
+          "annotations": {
+            "endpoints.kubernetes.io/last-change-trigger-time": "2021-02-01T19:40:18Z"
+          },
+          "resourceVersion": "647",
+          "creationTimestamp": "2021-02-01T19:39:33Z"
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "kind": "Endpoints",
+        "subsets": [
+          {
+            "ports": [
+              {
+                "name": "ambassador-injector",
+                "port": 8443,
+                "protocol": "TCP"
+              }
+            ],
+            "addresses": [
+              {
+                "ip": "10.42.0.6",
+                "nodeName": "alex",
+                "targetRef": {
+                  "uid": "a1bbeb63-ce03-4020-a2ec-9348947f7b24",
+                  "kind": "Pod",
+                  "name": "ambassador-injector-7bbbb4df9-mm4zn",
+                  "namespace": "ambassador",
+                  "resourceVersion": "640"
+                }
+              }
+            ]
+          }
+        ],
+        "metadata": {
+          "uid": "53739317-2e5e-42f6-99d2-f9e1cce7aca9",
+          "name": "ambassador-injector",
+          "labels": {
+            "helm.sh/chart": "ambassador-6.5.17",
+            "app.kubernetes.io/name": "ambassador-injector",
+            "app.kubernetes.io/part-of": "ambassador",
+            "app.kubernetes.io/instance": "ambassador",
+            "app.kubernetes.io/managed-by": "Helm"
+          },
+          "selfLink": "/api/v1/namespaces/ambassador/endpoints/ambassador-injector",
+          "namespace": "ambassador",
+          "annotations": {
+            "endpoints.kubernetes.io/last-change-trigger-time": "2021-02-01T19:40:18Z"
+          },
+          "resourceVersion": "642",
+          "creationTimestamp": "2021-02-01T19:39:33Z"
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "kind": "Endpoints",
+        "subsets": [
+          {
+            "ports": [
+              {
+                "name": "https",
+                "port": 8443,
+                "protocol": "TCP"
+              },
+              {
+                "name": "http",
+                "port": 8080,
+                "protocol": "TCP"
+              }
+            ],
+            "addresses": [
+              {
+                "ip": "10.42.0.13",
+                "nodeName": "alex",
+                "targetRef": {
+                  "uid": "c9aba4f0-3ed7-4be7-b9dc-6ffe10612299",
+                  "kind": "Pod",
+                  "name": "ambassador-78974f49b4-26hmb",
+                  "namespace": "ambassador",
+                  "resourceVersion": "1015"
+                }
+              }
+            ]
+          }
+        ],
+        "metadata": {
+          "uid": "27675e3a-3230-4d42-9e4c-6fbd1ae7be8f",
+          "name": "ambassador",
+          "labels": {
+            "product": "aes",
+            "helm.sh/chart": "ambassador-6.5.17",
+            "app.kubernetes.io/name": "ambassador",
+            "app.kubernetes.io/part-of": "ambassador",
+            "app.kubernetes.io/instance": "ambassador",
+            "app.kubernetes.io/component": "ambassador-service",
+            "app.kubernetes.io/managed-by": "Helm"
+          },
+          "selfLink": "/api/v1/namespaces/ambassador/endpoints/ambassador",
+          "namespace": "ambassador",
+          "resourceVersion": "1026",
+          "creationTimestamp": "2021-02-01T19:39:33Z"
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "kind": "Endpoints",
+        "subsets": [
+          {
+            "ports": [
+              {
+                "port": 6379,
+                "protocol": "TCP"
+              }
+            ],
+            "addresses": [
+              {
+                "ip": "10.42.0.8",
+                "nodeName": "alex",
+                "targetRef": {
+                  "uid": "7853a273-c41b-4e51-85db-3c1fc5eb4a65",
+                  "kind": "Pod",
+                  "name": "ambassador-redis-8556cbb4c6-7t4s4",
+                  "namespace": "ambassador",
+                  "resourceVersion": "620"
+                }
+              }
+            ]
+          }
+        ],
+        "metadata": {
+          "uid": "24417793-7402-42fa-a253-141475afce55",
+          "name": "ambassador-redis",
+          "labels": {
+            "helm.sh/chart": "ambassador-6.5.17",
+            "app.kubernetes.io/name": "ambassador-redis",
+            "app.kubernetes.io/part-of": "ambassador",
+            "app.kubernetes.io/instance": "ambassador",
+            "app.kubernetes.io/managed-by": "Helm"
+          },
+          "selfLink": "/api/v1/namespaces/ambassador/endpoints/ambassador-redis",
+          "namespace": "ambassador",
+          "annotations": {
+            "endpoints.kubernetes.io/last-change-trigger-time": "2021-02-01T19:40:10Z"
+          },
+          "resourceVersion": "621",
+          "creationTimestamp": "2021-02-01T19:39:33Z"
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "kind": "Endpoints",
+        "subsets": [
+          {
+            "ports": [
+              {
+                "name": "postgresql",
+                "port": 5432,
+                "protocol": "TCP"
+              }
+            ],
+            "addresses": [
+              {
+                "ip": "10.42.0.9",
+                "nodeName": "alex",
+                "targetRef": {
+                  "uid": "487b1dbc-b2d9-4f43-bdb5-4922a6cefe4f",
+                  "kind": "Pod",
+                  "name": "saas-postgresql-848cd9bb99-6dzz5",
+                  "namespace": "saas-dev",
+                  "resourceVersion": "883"
+                }
+              }
+            ]
+          }
+        ],
+        "metadata": {
+          "uid": "25fd3304-d422-4a0f-8380-ddb77380eed5",
+          "name": "saas-postgresql",
+          "selfLink": "/api/v1/namespaces/saas-dev/endpoints/saas-postgresql",
+          "namespace": "saas-dev",
+          "annotations": {
+            "endpoints.kubernetes.io/last-change-trigger-time": "2021-02-01T19:41:48Z"
+          },
+          "resourceVersion": "884",
+          "creationTimestamp": "2021-02-01T19:41:31Z"
+        },
+        "apiVersion": "v1"
+      },
+      {
+        "kind": "Endpoints",
+        "subsets": [
+          {
+            "ports": [
+              {
+                "port": 6379,
+                "protocol": "TCP"
+              }
+            ],
+            "addresses": [
+              {
+                "ip": "10.42.0.10",
+                "nodeName": "alex",
+                "targetRef": {
+                  "uid": "386ed4d8-967c-41e7-ba2d-51d1c8635bef",
+                  "kind": "Pod",
+                  "name": "ambassador-redis-5fbd59f4fb-qnw4f",
+                  "namespace": "saas-dev",
+                  "resourceVersion": "849"
+                }
+              }
+            ]
+          }
+        ],
+        "metadata": {
+          "uid": "36e94458-4b97-4969-9489-435234379cfe",
+          "name": "saas-redis",
+          "selfLink": "/api/v1/namespaces/saas-dev/endpoints/saas-redis",
+          "namespace": "saas-dev",
+          "annotations": {
+            "endpoints.kubernetes.io/last-change-trigger-time": "2021-02-01T19:41:33Z"
+          },
+          "resourceVersion": "851",
+          "creationTimestamp": "2021-02-01T19:41:32Z"
+        },
+        "apiVersion": "v1"
+      }
+    ],
+    "ingresses": null,
+    "LogService": null,
+    "TCPMapping": null,
+    "TLSContext": null,
+    "AuthService": [
+      {
+        "kind": "AuthService",
+        "spec": {
+          "proto": "grpc",
+          "auth_service": "127.0.0.1:8500"
+        },
+        "metadata": {
+          "uid": "7aece877-dd21-4b99-9773-2451caebbfa2",
+          "name": "ambassador-auth",
+          "labels": {
+            "product": "aes",
+            "helm.sh/chart": "ambassador-6.5.17",
+            "app.kubernetes.io/name": "ambassador",
+            "app.kubernetes.io/part-of": "ambassador",
+            "app.kubernetes.io/instance": "ambassador",
+            "app.kubernetes.io/component": "ambassador-auth",
+            "app.kubernetes.io/managed-by": "Helm"
+          },
+          "selfLink": "/apis/getambassador.io/v2/namespaces/ambassador/authservices/ambassador-auth",
+          "namespace": "ambassador",
+          "generation": 1,
+          "annotations": {
+            "meta.helm.sh/release-name": "ambassador",
+            "meta.helm.sh/release-namespace": "ambassador"
+          },
+          "resourceVersion": "552",
+          "creationTimestamp": "2021-02-01T19:39:33Z"
+        },
+        "apiVersion": "getambassador.io/v2"
+      }
+    ],
+    "ConsulResolver": null,
+    "TracingService": null,
+    "ingressclasses": null,
+    "RateLimitService": [
+      {
+        "kind": "RateLimitService",
+        "spec": {
+          "service": "127.0.0.1:8500"
+        },
+        "metadata": {
+          "uid": "21af791e-b615-4d07-92e2-f79453888ca0",
+          "name": "ambassador-ratelimit",
+          "labels": {
+            "product": "aes",
+            "helm.sh/chart": "ambassador-6.5.17",
+            "app.kubernetes.io/name": "ambassador",
+            "app.kubernetes.io/part-of": "ambassador",
+            "app.kubernetes.io/instance": "ambassador",
+            "app.kubernetes.io/component": "ambassador-ratelimit",
+            "app.kubernetes.io/managed-by": "Helm"
+          },
+          "selfLink": "/apis/getambassador.io/v2/namespaces/ambassador/ratelimitservices/ambassador-ratelimit",
+          "namespace": "ambassador",
+          "generation": 1,
+          "annotations": {
+            "meta.helm.sh/release-name": "ambassador",
+            "meta.helm.sh/release-namespace": "ambassador"
+          },
+          "resourceVersion": "585",
+          "creationTimestamp": "2021-02-01T19:39:33Z"
+        },
+        "apiVersion": "getambassador.io/v2"
+      }
+    ],
+    "KubernetesServiceResolver": null,
+    "KubernetesEndpointResolver": null
+  },
+  "AmbassadorMeta": {
+    "sidecar": null,
+    "cluster_id": "e0bc84a2-8099-5ade-9d79-57e90eeb009e",
+    "kube_version": "v1.17.17+k3s1",
+    "ambassador_id": "default",
+    "ambassador_version": "1.11.1-67-gc339fa388-dirty"
+  }
+}

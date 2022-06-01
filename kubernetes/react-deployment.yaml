@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: react-challenge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: react-challenge
+  template:
+    metadata:
+      labels:
+        app: react-challenge
+    spec:
+      containers:
+        - name: react-challenge
+          image: gps1mx/react-challenge:1
+          ports:
+            - name: http
+              containerPort: 3000
+          imagePullPolicy: Always
